@@ -1,0 +1,33 @@
+GUSTOVA — DEMO FRONTEND
+
+Cómo abrir:
+1. Extraé todo el ZIP en una carpeta.
+2. Hacé doble clic en "index.html".
+3. Se abre directamente en Chrome / Safari / Edge / Firefox.
+4. No requiere servidor, internet, npm ni instalar librerías.
+
+Qué incluye:
+- Home responsive para desktop, tablet y celular.
+- Catálogo con renders PNG optimizados de los 7 SVG originales para que abra rápido con doble clic.
+- Los 9 SVG originales se conservan sin modificar dentro de /assets.
+- Filtros visuales por categoría.
+- Modal de detalle de producto.
+- Carrito funcional (sumar, restar, subtotal).
+- Secciones editoriales con las fotos suministradas.
+- Paleta visual basada en el material de Gustova.
+- Sin backend y sin cobros reales.
+
+Notas:
+- Las tazas SVG se conservaron dentro de /assets como material de referencia,
+  pero NO aparecen como productos a la venta.
+- Los precios, textos y nombres comerciales son de demostración.
+- Todos los recursos son locales, por eso el HTML funciona con doble clic.
+
+Retoques visuales v2:
+- Menú móvil corregido: hamburguesa a la izquierda, logo centrado, carrito a la derecha.
+- Menú móvil animado con textos centrados y botón hamburguesa que se transforma en X.
+- Barra superior en movimiento infinito.
+- Se eliminó el buscador de la cabecera.
+- Parallax sutil en imágenes principales.
+- Animaciones suaves al entrar las secciones en pantalla.
+- Ajustes de tarjetas, sombras y espaciados para celulares.

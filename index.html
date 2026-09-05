@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#74735b">
+  <title>gustova — pastelería</title>
+  <meta name="description" content="Demo visual de e-commerce para Gustova Pastelería.">
+  <style>
+    :root{
+      --olive:#74735b;
+      --olive-dark:#555542;
+      --sage:#a8ab91;
+      --rose:#c98275;
+      --peach:#ead0bd;
+      --cream:#f4ebe0;
+      --ivory:#fbf7f1;
+      --ink:#2e2d27;
+      --muted:#7f7a70;
+      --line:rgba(46,45,39,.12);
+      --shadow:0 18px 50px rgba(73,64,49,.12);
+      --radius-xl:34px;
+      --radius-lg:24px;
+      --radius-md:18px;
+      --header-h:78px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      color:var(--ink);
+      background:var(--ivory);
+      font-family:"Avenir Next","Helvetica Neue",Arial,sans-serif;
+      -webkit-font-smoothing:antialiased;
+    }
+    body.cart-open, body.modal-open{overflow:hidden}
+    button,input{font:inherit}
+    button{color:inherit}
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
+    .container{width:min(1180px,calc(100% - 40px));margin-inline:auto}
+    .eyebrow{
+      text-transform:uppercase;letter-spacing:.18em;font-size:.72rem;font-weight:700;color:var(--olive)
+    }
+    .announcement{
+      height:34px;background:var(--olive);color:#fff;overflow:hidden;
+      position:sticky;top:0;z-index:45;
+      display:flex;align-items:center;white-space:nowrap;
+      font-size:.7rem;letter-spacing:.13em;text-transform:uppercase
+    }
+    .announcement-track{
+      display:flex;width:max-content;will-change:transform;
+      animation:announcement-marquee 25s linear infinite
+    }
+    .announcement-group{display:flex;align-items:center;flex-shrink:0}
+    .announcement-group span{padding:0 18px}
+    .announcement-group i{font-style:normal;opacity:.45}
+    @keyframes announcement-marquee{
+      from{transform:translate3d(0,0,0)}
+      to{transform:translate3d(-50%,0,0)}
+    }
+    .announcement:hover .announcement-track{animation-play-state:paused}
+    header{
+      height:var(--header-h);position:sticky;top:34px;z-index:40;
+      backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+      background:rgba(251,247,241,.88);border-bottom:1px solid rgba(46,45,39,.08)
+    }
+    .header-inner{height:100%;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px}
+    .header-left{justify-self:start;display:flex;align-items:center}
+    .nav{display:flex;align-items:center;gap:25px;font-size:.88rem}
+    .nav a{position:relative}
+    .nav a::after{content:"";position:absolute;left:0;bottom:-6px;width:0;height:1px;background:var(--ink);transition:.25s}
+    .nav a:hover::after{width:100%}
+    .brand{
+      font-size:2.05rem;font-weight:300;letter-spacing:-.055em;line-height:1
+    }
+    .actions{justify-self:end;display:flex;align-items:center;gap:10px}
+    .icon-btn{
+      width:42px;height:42px;border:0;background:transparent;border-radius:50%;
+      display:grid;place-items:center;cursor:pointer;transition:.22s
+    }
+    .icon-btn:hover{background:var(--cream)}
+    .cart-btn{position:relative}
+    .cart-count{
+      position:absolute;right:2px;top:1px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;
+      background:var(--rose);color:#fff;display:grid;place-items:center;font-size:.67rem;font-weight:800
+    }
+    .menu-btn{display:none}
+    .burger-lines{position:relative;width:20px;height:14px;display:block}
+    .burger-lines i{
+      position:absolute;left:0;width:20px;height:1.5px;background:currentColor;border-radius:3px;
+      transform-origin:center;transition:transform .3s ease,top .3s ease
+    }
+    .burger-lines i:first-child{top:3px}
+    .burger-lines i:last-child{top:10px}
+    .menu-btn.active .burger-lines i:first-child{top:6.5px;transform:rotate(45deg)}
+    .menu-btn.active .burger-lines i:last-child{top:6.5px;transform:rotate(-45deg)}
+    svg.icon{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+
+    .hero{
+      padding:34px 0 68px;
+      background:
+        radial-gradient(circle at 10% 15%,rgba(234,208,189,.45),transparent 30%),
+        linear-gradient(180deg,#fbf7f1 0%,#f8f1e7 100%);
+    }
+    .hero-grid{
+      display:grid;grid-template-columns:.92fr 1.08fr;gap:48px;align-items:center
+    }
+    .hero-copy{padding:46px 0}
+    .hero h1{
+      margin:14px 0 22px;max-width:720px;font-size:clamp(3.25rem,6vw,6.4rem);
+      line-height:.9;letter-spacing:-.065em;font-weight:300
+    }
+    .hero h1 em{font-family:Georgia,"Times New Roman",serif;font-weight:400;color:var(--olive)}
+    .hero p{
+      max-width:560px;margin:0 0 30px;color:#635f57;font-size:1.05rem;line-height:1.7
+    }
+    .hero-ctas{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{
+      border:0;border-radius:999px;padding:14px 21px;cursor:pointer;
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      font-size:.88rem;font-weight:700;transition:.22s
+    }
+    .btn-primary{background:var(--olive);color:#fff;box-shadow:0 12px 24px rgba(116,115,91,.2)}
+    .btn-primary:hover{transform:translateY(-2px);background:var(--olive-dark)}
+    .btn-soft{background:var(--cream);border:1px solid rgba(46,45,39,.08)}
+    .btn-soft:hover{background:#efe1d2}
+    .hero-visual{position:relative;min-height:610px}
+    .hero-photo{
+      position:absolute;inset:0 7% 0 14%;border-radius:160px 160px 32px 32px;overflow:hidden;
+      box-shadow:var(--shadow);background:#ddd
+    }
+    .hero-photo img{width:100%;height:112%;object-fit:cover;transform:translate3d(0,-5%,0);will-change:transform}
+    .parallax-shell{isolation:isolate}
+    .parallax-img{will-change:transform}
+    .float-card{
+      position:absolute;left:0;bottom:52px;width:210px;padding:18px;background:rgba(251,247,241,.94);
+      border:1px solid rgba(255,255,255,.6);border-radius:24px;box-shadow:var(--shadow);
+      backdrop-filter:blur(10px)
+    }
+    .float-card strong{display:block;font-family:Georgia,serif;font-size:1.4rem;font-weight:400;margin-bottom:5px}
+    .float-card span{font-size:.78rem;color:var(--muted);line-height:1.45}
+    .palette{
+      position:absolute;right:0;top:44px;display:grid;grid-template-columns:repeat(4,34px);gap:7px;
+      padding:10px;border-radius:999px;background:rgba(251,247,241,.9);box-shadow:0 10px 26px rgba(70,61,48,.12)
+    }
+    .sw{width:34px;height:34px;border-radius:50%}
+    .sw:nth-child(1){background:#74735b}.sw:nth-child(2){background:#a8ab91}.sw:nth-child(3){background:#c98275}.sw:nth-child(4){background:#ead0bd}
+
+    .section{padding:78px 0}
+    .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:32px}
+    .section-head h2{font:400 clamp(2.25rem,4vw,4rem)/1 Georgia,"Times New Roman",serif;margin:8px 0 0}
+    .section-head p{max-width:470px;color:var(--muted);line-height:1.65;margin:0}
+    .filters{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:28px}
+    .filter{
+      border:1px solid var(--line);background:transparent;border-radius:999px;padding:10px 15px;cursor:pointer;
+      font-size:.8rem;transition:.2s
+    }
+    .filter:hover,.filter.active{background:var(--ink);border-color:var(--ink);color:#fff}
+    .products{
+      display:grid;grid-template-columns:repeat(4,1fr);gap:18px
+    }
+    .product{
+      position:relative;border:1px solid rgba(46,45,39,.09);border-radius:26px;overflow:hidden;
+      background:linear-gradient(180deg,#fff 0%,#fdfbf8 100%);
+      transition:transform .32s cubic-bezier(.2,.7,.2,1),box-shadow .32s ease,border-color .32s ease;
+      min-width:0
+    }
+    .product:hover{transform:translateY(-6px);box-shadow:0 24px 55px rgba(73,64,49,.14);border-color:rgba(116,115,91,.18)}
+    .product-media{
+      aspect-ratio:1/1;background:#faf8f5;position:relative;display:grid;place-items:center;overflow:hidden;cursor:pointer
+    }
+    .product-media img{
+      width:92%;height:92%;object-fit:contain;transition:.35s cubic-bezier(.2,.7,.2,1)
+    }
+    .product:hover .product-media img{transform:scale(1.04)}
+    .badge{
+      position:absolute;left:14px;top:14px;z-index:2;background:rgba(251,247,241,.94);
+      border:1px solid rgba(46,45,39,.08);padding:7px 10px;border-radius:999px;
+      text-transform:uppercase;letter-spacing:.12em;font-weight:800;font-size:.61rem
+    }
+    .product-info{padding:16px 16px 17px}
+    .product-title-row{display:flex;gap:10px;justify-content:space-between;align-items:flex-start}
+    .product h3{font-size:.98rem;line-height:1.25;margin:0 0 6px;font-weight:650}
+    .price{white-space:nowrap;font-weight:750;font-size:.92rem}
+    .product p{margin:0;color:var(--muted);font-size:.78rem;line-height:1.45;min-height:34px}
+    .add{
+      width:100%;margin-top:14px;border:1px solid var(--line);background:var(--ivory);border-radius:999px;
+      padding:11px 13px;cursor:pointer;font-weight:750;font-size:.78rem;transition:.2s
+    }
+    .add:hover{background:var(--olive);color:#fff;border-color:var(--olive)}
+    .product.is-hidden{display:none}
+
+    .experience{padding:22px 0 85px}
+    .experience-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+    .story-card{
+      position:relative;min-height:580px;border-radius:var(--radius-xl);overflow:hidden;background:#ddd
+    }
+    .story-card img{position:absolute;width:100%;height:100%;object-fit:cover}
+    .story-overlay{
+      position:absolute;inset:auto 22px 22px 22px;padding:26px;border-radius:24px;
+      background:rgba(251,247,241,.9);backdrop-filter:blur(15px);max-width:460px
+    }
+    .story-overlay h3{font:400 2rem/1.02 Georgia,serif;margin:6px 0 10px}
+    .story-overlay p{color:#69645a;line-height:1.6;margin:0;font-size:.9rem}
+    .side-stack{display:grid;grid-template-rows:1fr 1fr;gap:18px}
+    .image-card{min-height:281px;border-radius:var(--radius-xl);overflow:hidden;position:relative}
+    .image-card img{width:100%;height:100%;object-fit:cover}
+    .image-card .caption{
+      position:absolute;left:18px;bottom:18px;background:rgba(46,45,39,.78);color:#fff;padding:9px 12px;
+      border-radius:999px;font-size:.72rem;backdrop-filter:blur(8px)
+    }
+
+    .quote{
+      margin:0 0 78px;border-radius:var(--radius-xl);padding:70px 50px;text-align:center;
+      background:var(--olive);color:#fff;position:relative;overflow:hidden
+    }
+    .quote::before,.quote::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.07)}
+    .quote::before{width:240px;height:240px;left:-90px;top:-110px}
+    .quote::after{width:320px;height:320px;right:-140px;bottom:-170px}
+    .quote h2{font:400 clamp(2.2rem,5vw,4.7rem)/.98 Georgia,serif;margin:0 auto 18px;max-width:900px}
+    .quote p{margin:0 auto;color:rgba(255,255,255,.72);max-width:650px;line-height:1.6}
+
+    .gallery{display:grid;grid-template-columns:1.3fr .85fr .85fr;gap:12px}
+    .gallery figure{margin:0;border-radius:22px;overflow:hidden;min-height:380px}
+    .gallery figure:first-child{grid-row:span 2;min-height:772px}
+    .gallery img{width:100%;height:100%;object-fit:cover;transition:.4s}
+    .gallery figure:hover img{transform:scale(1.02)}
+
+    footer{margin-top:82px;background:#efe5d8;border-top:1px solid rgba(46,45,39,.08)}
+    .footer-inner{display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:40px;padding:58px 0}
+    .footer-brand{font-size:2.4rem;font-weight:300;letter-spacing:-.06em}
+    .footer-copy{max-width:360px;color:var(--muted);font-size:.87rem;line-height:1.6;margin-top:14px}
+    .footer-col h4{font-size:.72rem;text-transform:uppercase;letter-spacing:.15em;margin:7px 0 16px}
+    .footer-col a,.footer-col span{display:block;color:#6d685f;font-size:.85rem;margin:9px 0}
+    .footer-bottom{border-top:1px solid rgba(46,45,39,.08);padding:18px 0 25px;font-size:.73rem;color:#817b71}
+
+    .drawer-backdrop,.modal-backdrop{
+      position:fixed;inset:0;background:rgba(33,31,27,.35);opacity:0;pointer-events:none;
+      transition:.25s;z-index:80;backdrop-filter:blur(3px)
+    }
+    .drawer{
+      position:fixed;right:0;top:0;width:min(440px,100%);height:100dvh;background:var(--ivory);
+      z-index:90;transform:translateX(102%);transition:.32s cubic-bezier(.22,.8,.3,1);
+      display:flex;flex-direction:column;box-shadow:-20px 0 50px rgba(34,30,24,.15)
+    }
+    body.cart-open .drawer{transform:translateX(0)}
+    body.cart-open .drawer-backdrop{opacity:1;pointer-events:auto}
+    .drawer-head{padding:22px 22px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+    .drawer-head h3{font:400 1.7rem Georgia,serif;margin:0}
+    .cart-items{padding:12px 20px;overflow:auto;flex:1}
+    .cart-item{display:grid;grid-template-columns:76px 1fr auto;gap:13px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+    .cart-thumb{width:76px;height:76px;border-radius:16px;background:#fff;display:grid;place-items:center;overflow:hidden}
+    .cart-thumb img{width:94%;height:94%;object-fit:contain}
+    .cart-item h4{font-size:.84rem;margin:0 0 7px}
+    .qty{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+    .qty button{border:0;background:transparent;width:28px;height:28px;cursor:pointer}
+    .qty span{font-size:.75rem;min-width:22px;text-align:center}
+    .cart-price{font-size:.8rem;font-weight:750;white-space:nowrap}
+    .empty{padding:50px 10px;text-align:center;color:var(--muted)}
+    .empty .empty-icon{width:58px;height:58px;margin:0 auto 15px;border-radius:50%;background:var(--cream);display:grid;place-items:center}
+    .drawer-foot{padding:20px;border-top:1px solid var(--line);background:#fff}
+    .subtotal{display:flex;justify-content:space-between;font-weight:800;margin-bottom:6px}
+    .tiny{font-size:.7rem;color:var(--muted);line-height:1.4;margin-bottom:14px}
+    .checkout{width:100%}
+    .demo-note{margin-top:10px;text-align:center;color:var(--muted);font-size:.67rem}
+
+    .modal{
+      position:fixed;left:50%;top:50%;transform:translate(-50%,-46%) scale(.98);
+      width:min(860px,calc(100% - 32px));max-height:calc(100dvh - 32px);overflow:auto;background:var(--ivory);
+      border-radius:30px;z-index:110;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 35px 100px rgba(31,28,24,.24)
+    }
+    body.modal-open .modal{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+    body.modal-open .modal-backdrop{opacity:1;pointer-events:auto;z-index:100}
+    .modal-close{position:absolute;right:16px;top:16px;z-index:3;background:rgba(251,247,241,.88)}
+    .modal-grid{display:grid;grid-template-columns:1fr 1fr}
+    .modal-media{background:#fff;min-height:460px;display:grid;place-items:center;padding:20px}
+    .modal-media img{width:96%;height:96%;object-fit:contain}
+    .modal-copy{padding:50px 38px;align-self:center}
+    .modal-copy h3{font:400 2.5rem/1.05 Georgia,serif;margin:8px 0 12px}
+    .modal-copy p{color:var(--muted);line-height:1.65;font-size:.9rem}
+    .modal-price{font-size:1.2rem;font-weight:800;margin:18px 0}
+    .modal-meta{padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:.75rem;color:var(--muted);line-height:1.7;margin:18px 0}
+    .modal-add{width:100%}
+
+    .toast{
+      position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--ink);color:#fff;
+      padding:12px 18px;border-radius:999px;font-size:.78rem;z-index:150;opacity:0;pointer-events:none;transition:.25s;
+      box-shadow:0 10px 30px rgba(0,0,0,.2)
+    }
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+
+    .mobile-menu-backdrop{
+      position:fixed;inset:calc(34px + var(--header-h)) 0 0;background:rgba(39,36,30,.18);
+      backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
+      opacity:0;pointer-events:none;transition:opacity .3s ease;z-index:38
+    }
+    .mobile-menu{
+      position:fixed;left:0;right:0;top:calc(34px + var(--header-h));z-index:39;
+      background:rgba(251,247,241,.98);border-bottom:1px solid var(--line);
+      transform:translateY(-16px);opacity:0;visibility:hidden;pointer-events:none;
+      transition:transform .35s cubic-bezier(.22,.8,.3,1),opacity .25s ease,visibility .25s;
+      box-shadow:0 22px 45px rgba(50,44,35,.12)
+    }
+    .mobile-menu.open{transform:translateY(0);opacity:1;visibility:visible;pointer-events:auto}
+    .mobile-menu-backdrop.open{opacity:1;pointer-events:auto}
+    .mobile-menu-inner{
+      min-height:330px;padding:34px 28px 40px;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden
+    }
+    .mobile-menu a{
+      width:min(390px,100%);padding:15px 12px;font:400 1.65rem/1.1 Georgia,serif;
+      border-bottom:1px solid rgba(46,45,39,.09);position:relative;z-index:2;
+      transition:letter-spacing .22s ease,color .22s ease
+    }
+    .mobile-menu a:hover{color:var(--olive);letter-spacing:.02em}
+    .mobile-menu a span{
+      display:block;margin-bottom:5px;font-family:"Avenir Next","Helvetica Neue",Arial,sans-serif;
+      font-size:.58rem;letter-spacing:.18em;color:#aaa296
+    }
+    .mobile-menu-sign{
+      position:absolute;left:50%;bottom:-30px;transform:translateX(-50%);
+      font-size:7.3rem;font-weight:300;letter-spacing:-.075em;color:rgba(116,115,91,.055);
+      pointer-events:none;white-space:nowrap
+    }
+
+    .reveal{
+      opacity:0;transform:translateY(22px);
+      transition:opacity .75s ease,transform .75s cubic-bezier(.22,.8,.3,1)
+    }
+    .reveal.in-view{opacity:1;transform:translateY(0)}
+    .product.reveal:nth-child(2){transition-delay:.04s}
+    .product.reveal:nth-child(3){transition-delay:.08s}
+    .product.reveal:nth-child(4){transition-delay:.12s}
+
+    @media (max-width: 980px){
+      .nav{display:none}.menu-btn{display:grid}
+      .header-inner{grid-template-columns:1fr auto 1fr}
+      .header-left{justify-self:start}
+      .actions{justify-self:end}
+      .hero-grid{grid-template-columns:1fr;gap:18px}
+      .hero-copy{padding:28px 0 6px}
+      .hero h1{max-width:760px}
+      .hero-visual{min-height:560px}
+      .hero-photo{inset:0 4% 0 18%;border-radius:140px 140px 30px 30px}
+      .products{grid-template-columns:repeat(3,1fr)}
+      .experience-grid{grid-template-columns:1fr}
+      .story-card{min-height:560px}
+      .side-stack{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+      .image-card{min-height:320px}
+      .gallery{grid-template-columns:1fr 1fr}
+      .gallery figure:first-child{grid-row:span 1;grid-column:span 2;min-height:560px}
+      .footer-inner{grid-template-columns:1.2fr .8fr .8fr}
+    }
+    @media (max-width: 720px){
+      :root{--header-h:67px}
+      .container{width:min(100% - 28px,1180px)}
+      .announcement{height:30px;font-size:.6rem;letter-spacing:.1em}
+      header{top:30px}
+      .announcement-group span{padding:0 14px}
+      .announcement-track{animation-duration:20s}
+      .mobile-menu,.mobile-menu-backdrop{top:calc(30px + var(--header-h))}
+      .mobile-menu-inner{min-height:315px;padding-top:27px;padding-bottom:34px}
+      .brand{font-size:1.7rem}
+      .header-inner{gap:8px}
+      .actions{gap:2px}.icon-btn{width:38px;height:38px}
+      .hero{padding-top:18px;padding-bottom:50px}
+      .hero-copy{padding-top:22px}
+      .hero h1{font-size:clamp(3.25rem,16vw,5rem);margin-top:11px}
+      .hero p{font-size:.94rem;line-height:1.6}
+      .hero-visual{min-height:440px}
+      .hero-photo{inset:0 2% 0 10%;border-radius:100px 100px 24px 24px}
+      .float-card{left:0;bottom:28px;width:174px;padding:14px;border-radius:18px}
+      .float-card strong{font-size:1.15rem}
+      .palette{right:0;top:20px;grid-template-columns:repeat(4,24px);gap:5px;padding:7px}
+      .sw{width:24px;height:24px}
+      .section{padding:58px 0}
+      .section-head{display:block;margin-bottom:23px}
+      .section-head p{margin-top:14px}
+      .filters{overflow:auto;flex-wrap:nowrap;padding-bottom:4px;margin-right:-14px}
+      .filter{white-space:nowrap}
+      .products{grid-template-columns:repeat(2,1fr);gap:10px}
+      .product{border-radius:20px}
+      .product-info{padding:12px}
+      .product-title-row{display:block}
+      .product h3{font-size:.85rem;min-height:32px}
+      .price{font-size:.82rem;display:block;margin-bottom:5px}
+      .product p{display:none}
+      .badge{left:10px;top:10px;font-size:.55rem;padding:6px 8px}
+      .add{margin-top:9px;padding:10px 7px;font-size:.7rem}
+      .experience{padding-top:8px}
+      .story-card{min-height:520px;border-radius:26px}
+      .story-overlay{inset:auto 14px 14px 14px;padding:20px}
+      .side-stack{grid-template-columns:1fr;gap:12px}
+      .image-card{min-height:300px;border-radius:24px}
+      .quote{padding:54px 22px;border-radius:26px;margin-bottom:58px}
+      .gallery{gap:8px}
+      .gallery figure,.gallery figure:first-child{min-height:290px;border-radius:18px}
+      .footer-inner{grid-template-columns:1fr;gap:20px;padding:42px 0}
+      .footer-col{border-top:1px solid var(--line);padding-top:16px}
+      .modal-grid{grid-template-columns:1fr}
+      .modal-media{min-height:330px}
+      .modal-copy{padding:28px 24px 30px}
+      .modal-copy h3{font-size:2rem}
+    }
+    @media (max-width: 430px){
+      .products{grid-template-columns:1fr}
+      .product p{display:block}
+      .product-title-row{display:flex}
+      .gallery{grid-template-columns:1fr}
+      .gallery figure:first-child{grid-column:span 1}
+    }
+    @media (prefers-reduced-motion:reduce){
+      *{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+      .reveal{opacity:1!important;transform:none!important}
+      .parallax-img{transform:none!important}
+    }
+  </style>
+</head>
+<body>
+  <div class="announcement" aria-label="Información de compra">
+    <div class="announcement-track">
+      <div class="announcement-group">
+        <span>hecho artesanalmente</span><i>•</i>
+        <span>producción del día</span><i>•</i>
+        <span>retiro & entrega programada</span><i>•</i>
+        <span>pastelería gustova</span><i>•</i>
+      </div>
+      <div class="announcement-group" aria-hidden="true">
+        <span>hecho artesanalmente</span><i>•</i>
+        <span>producción del día</span><i>•</i>
+        <span>retiro & entrega programada</span><i>•</i>
+        <span>pastelería gustova</span><i>•</i>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <div class="container header-inner">
+      <div class="header-left">
+        <nav class="nav" aria-label="Navegación principal">
+          <a href="#productos">Pastelería</a>
+          <a href="#experiencia">La casa</a>
+          <a href="#galeria">Gustova</a>
+        </nav>
+
+        <button class="icon-btn menu-btn" id="menuBtn" aria-label="Abrir menú" aria-expanded="false">
+          <span class="burger-lines" aria-hidden="true"><i></i><i></i></span>
+        </button>
+      </div>
+
+      <a class="brand" href="#" aria-label="Gustova inicio">gustova</a>
+
+      <div class="actions">
+        <button class="icon-btn cart-btn" id="cartBtn" aria-label="Abrir carrito">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg>
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-menu-backdrop" id="mobileMenuBackdrop"></div>
+  <nav class="mobile-menu" id="mobileMenu" aria-label="Menú móvil">
+    <div class="mobile-menu-inner">
+      <a href="#productos"><span>01</span>Pastelería</a>
+      <a href="#experiencia"><span>02</span>La casa</a>
+      <a href="#galeria"><span>03</span>Gustova</a>
+      <div class="mobile-menu-sign">gustova</div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <h1>Tu momento<br><em>más rico.</em></h1>
+          <p>Hojaldres dorados, tortas cremosas y pequeños antojos preparados cada día. Una carta simple, cálida y bien Gustova.</p>
+          <div class="hero-ctas">
+            <a class="btn btn-primary" href="#productos">
+              Ver la carta
+              <svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></svg>
+            </a>
+            <a class="btn btn-soft" href="#experiencia">Conocer el espacio</a>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="hero-photo parallax-shell"><img class="parallax-img" data-parallax="0.09" src="assets/medialunas-cafe.jpg" alt="Medialunas y café servidos en Gustova"></div>
+          <div class="float-card">
+            <span class="eyebrow">favorito de la casa</span>
+            <strong>Medialuna Gustova</strong>
+            <span>Manteca, mucho hojaldre y ese brillo que llega a la mesa todavía tibio.</span>
+          </div>
+          <div class="palette" aria-label="Paleta de colores Gustova">
+            <span class="sw"></span><span class="sw"></span><span class="sw"></span><span class="sw"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="productos">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">elegí tu antojo</div>
+            <h2>Pastelería</h2>
+          </div>
+          <p>Una selección pensada para desayunos, meriendas y ese “me llevo algo dulce” que termina siendo la mejor parte del día.</p>
+        </div>
+
+        <div class="filters" aria-label="Filtrar productos">
+          <button class="filter active" data-filter="all">Todo</button>
+          <button class="filter" data-filter="hojaldres">Hojaldres</button>
+          <button class="filter" data-filter="tortas">Tortas</button>
+          <button class="filter" data-filter="especiales">Especiales</button>
+        </div>
+
+        <div class="products" id="productGrid"></div>
+      </div>
+    </section>
+
+    <section class="experience" id="experiencia">
+      <div class="container">
+        <div class="experience-grid">
+          <article class="story-card">
+            <img class="parallax-img" data-parallax="0.055" src="assets/interior-mesas.jpg" alt="Interior cálido de Gustova">
+            <div class="story-overlay">
+              <div class="eyebrow">la casa gustova</div>
+              <h3>Un lugar para quedarse un ratito.</h3>
+              <p>Maderas claras, verde oliva, luz cálida y una vitrina que cambia con la producción del día. La identidad del local también vive en la tienda online.</p>
+            </div>
+          </article>
+          <div class="side-stack">
+            <div class="image-card">
+              <img class="parallax-img" data-parallax="0.04" src="assets/interior-mostrador.jpg" alt="Mostrador y vitrina de Gustova">
+              <span class="caption">producción del día</span>
+            </div>
+            <div class="image-card">
+              <img class="parallax-img" data-parallax="0.04" src="assets/limonadas-gustova.jpg" alt="Limonadas servidas en Gustova">
+              <span class="caption">para acompañar</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container">
+      <div class="quote">
+        <div class="eyebrow" style="color:rgba(255,255,255,.68);margin-bottom:14px">simple, rico, gustova</div>
+        <h2>Pastelería que entra por los ojos y se queda por el sabor.</h2>
+        <p>Esta maqueta prioriza una experiencia visual limpia, cálida y gastronómica, con carrito funcional en el navegador y lista para conectar a un backend más adelante.</p>
+      </div>
+    </section>
+
+    <section class="section" id="galeria" style="padding-top:0">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">desde gustova</div>
+            <h2>La pausa también se mira.</h2>
+          </div>
+          <p>Un bloque editorial para darle vida de marca al e-commerce sin distraer de la compra.</p>
+        </div>
+        <div class="gallery">
+          <figure><img src="assets/jugos-gustova.jpg" alt="Jugos coloridos servidos en Gustova"></figure>
+          <figure><img src="assets/medialunas-cafe.jpg" alt="Medialunas de Gustova"></figure>
+          <figure><img src="assets/interior-mostrador.jpg" alt="Interior de la pastelería"></figure>
+          <figure><img src="assets/limonadas-gustova.jpg" alt="Limonadas de Gustova"></figure>
+          <figure><img src="assets/logo-gustova.jpg" alt="Símbolo de Gustova"></figure>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div>
+        <div class="footer-brand">gustova</div>
+        <div class="footer-copy">Pastelería de autor, hecha con tiempo y servida con una estética simple, cálida y contemporánea.</div>
+      </div>
+      <div class="footer-col">
+        <h4>Comprar</h4>
+        <a href="#productos">Pastelería</a>
+        <a href="#productos">Favoritos</a>
+        <a href="#productos">Para compartir</a>
+      </div>
+      <div class="footer-col">
+        <h4>Información</h4>
+        <span>Retiro en local</span>
+        <span>Entrega programada</span>
+        <span>Pedidos sujetos a disponibilidad</span>
+      </div>
+    </div>
+    <div class="container footer-bottom">Demo visual · precios, textos y operación son ilustrativos.</div>
+  </footer>
+
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="drawer" id="drawer" aria-label="Carrito">
+    <div class="drawer-head">
+      <h3>Tu pedido</h3>
+      <button class="icon-btn" id="closeCart" aria-label="Cerrar carrito">
+        <svg class="icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="drawer-foot">
+      <div class="subtotal"><span>Subtotal</span><span id="subtotal">$0</span></div>
+      <div class="tiny">El costo de envío o retiro se definiría en el checkout real.</div>
+      <button class="btn btn-primary checkout" id="checkoutBtn">Continuar pedido</button>
+      <div class="demo-note">Demo frontend · no realiza cobros</div>
+    </div>
+  </aside>
+
+  <div class="modal-backdrop" id="modalBackdrop"></div>
+  <div class="modal" id="productModal" role="dialog" aria-modal="true" aria-label="Detalle del producto">
+    <button class="icon-btn modal-close" id="modalClose" aria-label="Cerrar detalle">
+      <svg class="icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
+    </button>
+    <div class="modal-grid">
+      <div class="modal-media"><img id="modalImage" alt=""></div>
+      <div class="modal-copy">
+        <div class="eyebrow" id="modalEyebrow">gustova</div>
+        <h3 id="modalTitle"></h3>
+        <p id="modalDescription"></p>
+        <div class="modal-price" id="modalPrice"></div>
+        <div class="modal-meta">Producción artesanal · Disponibilidad sujeta al día · Imagen ilustrativa de la pieza</div>
+        <button class="btn btn-primary modal-add" id="modalAdd">Agregar al carrito</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Agregado al carrito</div>
+
+  <script>
+    const PRODUCTS = [
+      {
+        id:"medialuna-ddl",
+        name:"Medialuna con dulce de leche",
+        short:"Hojaldre aireado, mantecoso y relleno generoso.",
+        description:"Una medialuna de hojaldre bien dorada, terminada con azúcar impalpable y un corazón abundante de dulce de leche. Golosa, delicada y perfecta para acompañar un café.",
+        price:4900, category:"hojaldres", badge:"favorito",
+        image:"assets/medialuna-dulce-de-leche.png"
+      },
+      {
+        id:"cheesecake",
+        name:"Cheesecake de frutos rojos",
+        short:"Cremoso, suave y con acidez justa.",
+        description:"Base delicada, relleno de queso extra cremoso y una terminación fresca de frutos rojos. Un clásico elegante para comer despacio o compartir.",
+        price:7900, category:"tortas", badge:"clásico",
+        image:"assets/cheesecake-frutos-rojos.png"
+      },
+      {
+        id:"mini-shot",
+        name:"Mini torta Shot",
+        short:"Chocolate intenso en formato individual.",
+        description:"Capas de chocolate, crema sedosa y una terminación intensa pensada para ese antojo que no necesita excusas. Tamaño individual, sabor de torta grande.",
+        price:6900, category:"tortas", badge:"nuevo",
+        image:"assets/mini-torta-shot.png"
+      },
+      {
+        id:"roll-pistacho",
+        name:"Roll de pistacho",
+        short:"Hojaldre laminado con crema de pistacho.",
+        description:"Roll de masa laminada con bordes crocantes y centro tierno, relleno de crema de pistacho. Aromático, suave y con un perfil delicadamente tostado.",
+        price:6400, category:"especiales", badge:"especial",
+        image:"assets/roll-pistacho.png"
+      },
+      {
+        id:"torta-choco",
+        name:"Torta de chocolate",
+        short:"Profunda, húmeda y muy chocolatosa.",
+        description:"Bizcocho húmedo de cacao con capas de crema de chocolate y una terminación generosa. Pensada para fanáticos del chocolate y mesas para compartir.",
+        price:28900, category:"tortas", badge:"para compartir",
+        image:"assets/torta-chocolate.png"
+      },
+      {
+        id:"medialuna-manteca",
+        name:"Medialuna de manteca",
+        short:"Dorada, brillante y recién horneada.",
+        description:"La pieza esencial de la casa: capas finas de masa laminada, perfume a manteca y una superficie brillante. Ideal tibia, sola o junto a un café con leche.",
+        price:3300, category:"hojaldres", badge:"",
+        image:"assets/medialuna-manteca.png"
+      },
+      {
+        id:"hojaldre-ddl",
+        name:"Hojaldre con dulce de leche",
+        short:"Crocante por fuera, cremoso por dentro.",
+        description:"Una pieza de hojaldre crocante y liviana con relleno de dulce de leche. Texturas contrastantes y una terminación limpia, pensada para la merienda.",
+        price:5600, category:"hojaldres", badge:"favorito",
+        image:"assets/hojaldre-dulce-de-leche.png"
+      }
+    ];
+
+    const money = n => new Intl.NumberFormat("es-AR",{style:"currency",currency:"ARS",maximumFractionDigits:0}).format(n);
+    let cart = {};
+    let modalProductId = null;
+
+    const grid = document.getElementById("productGrid");
+    const cartItems = document.getElementById("cartItems");
+    const cartCount = document.getElementById("cartCount");
+    const subtotal = document.getElementById("subtotal");
+    const toast = document.getElementById("toast");
+
+    function renderProducts(filter="all"){
+      grid.innerHTML = PRODUCTS.map(p => `
+        <article class="product in-view ${filter !== "all" && p.category !== filter ? "is-hidden":""}" data-category="${p.category}">
+          <div class="product-media" onclick="openProduct('${p.id}')" role="button" tabindex="0" aria-label="Ver ${p.name}">
+            ${p.badge ? `<span class="badge">${p.badge}</span>`:""}
+            <img src="${p.image}" alt="${p.name}" loading="lazy">
+          </div>
+          <div class="product-info">
+            <div class="product-title-row">
+              <div>
+                <h3>${p.name}</h3>
+                <p>${p.short}</p>
+              </div>
+              <span class="price">${money(p.price)}</span>
+            </div>
+            <button class="add" onclick="addToCart('${p.id}')">+ Agregar</button>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    document.querySelectorAll(".filter").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));
+        btn.classList.add("active");
+        renderProducts(btn.dataset.filter);
+      });
+    });
+
+    function addToCart(id){
+      cart[id]=(cart[id]||0)+1;
+      updateCart();
+      showToast();
+    }
+
+    function changeQty(id,delta){
+      cart[id]=(cart[id]||0)+delta;
+      if(cart[id]<=0) delete cart[id];
+      updateCart();
+    }
+
+    function updateCart(){
+      const entries=Object.entries(cart);
+      const count=entries.reduce((a,[,q])=>a+q,0);
+      cartCount.textContent=count;
+      cartCount.style.display=count ? "grid":"none";
+      let total=0;
+
+      if(!entries.length){
+        cartItems.innerHTML=`
+          <div class="empty">
+            <div class="empty-icon">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg>
+            </div>
+            <strong>Tu carrito está vacío</strong>
+            <div style="margin-top:8px;font-size:.8rem">Elegí algo rico y lo vas a ver acá.</div>
+          </div>`;
+      }else{
+        cartItems.innerHTML=entries.map(([id,q])=>{
+          const p=PRODUCTS.find(x=>x.id===id);
+          total += p.price*q;
+          return `<div class="cart-item">
+            <div class="cart-thumb"><img src="${p.image}" alt=""></div>
+            <div>
+              <h4>${p.name}</h4>
+              <div class="qty">
+                <button onclick="changeQty('${id}',-1)" aria-label="Restar uno">−</button>
+                <span>${q}</span>
+                <button onclick="changeQty('${id}',1)" aria-label="Sumar uno">+</button>
+              </div>
+            </div>
+            <div class="cart-price">${money(p.price*q)}</div>
+          </div>`;
+        }).join("");
+      }
+      subtotal.textContent=money(total);
+    }
+
+    function openCart(){document.body.classList.add("cart-open")}
+    function closeCart(){document.body.classList.remove("cart-open")}
+    document.getElementById("cartBtn").addEventListener("click",openCart);
+    document.getElementById("closeCart").addEventListener("click",closeCart);
+    document.getElementById("drawerBackdrop").addEventListener("click",closeCart);
+
+    function openProduct(id){
+      const p=PRODUCTS.find(x=>x.id===id);
+      modalProductId=id;
+      document.getElementById("modalImage").src=p.image;
+      document.getElementById("modalImage").alt=p.name;
+      document.getElementById("modalTitle").textContent=p.name;
+      document.getElementById("modalDescription").textContent=p.description;
+      document.getElementById("modalPrice").textContent=money(p.price);
+      document.getElementById("modalEyebrow").textContent=p.badge || "gustova";
+      document.body.classList.add("modal-open");
+    }
+    function closeModal(){document.body.classList.remove("modal-open")}
+    document.getElementById("modalClose").addEventListener("click",closeModal);
+    document.getElementById("modalBackdrop").addEventListener("click",closeModal);
+    document.getElementById("modalAdd").addEventListener("click",()=>{
+      if(modalProductId) addToCart(modalProductId);
+      closeModal();
+      setTimeout(openCart,120);
+    });
+
+    function showToast(){
+      toast.classList.add("show");
+      clearTimeout(window.__toast);
+      window.__toast=setTimeout(()=>toast.classList.remove("show"),1300);
+    }
+
+    document.getElementById("checkoutBtn").addEventListener("click",()=>{
+      if(!Object.keys(cart).length){
+        showToastCustom("Primero agregá un producto");
+        return;
+      }
+      showToastCustom("Checkout de demostración");
+    });
+    function showToastCustom(text){
+      toast.textContent=text;
+      toast.classList.add("show");
+      clearTimeout(window.__toast);
+      window.__toast=setTimeout(()=>{
+        toast.classList.remove("show");
+        setTimeout(()=>toast.textContent="Agregado al carrito",250)
+      },1600);
+    }
+
+    const menuBtn=document.getElementById("menuBtn");
+    const mobileMenu=document.getElementById("mobileMenu");
+    const mobileMenuBackdrop=document.getElementById("mobileMenuBackdrop");
+
+    function setMobileMenu(open){
+      mobileMenu.classList.toggle("open",open);
+      mobileMenuBackdrop.classList.toggle("open",open);
+      menuBtn.classList.toggle("active",open);
+      menuBtn.setAttribute("aria-expanded",String(open));
+      menuBtn.setAttribute("aria-label",open ? "Cerrar menú" : "Abrir menú");
+    }
+    menuBtn.addEventListener("click",()=>setMobileMenu(!mobileMenu.classList.contains("open")));
+    mobileMenuBackdrop.addEventListener("click",()=>setMobileMenu(false));
+    mobileMenu.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>setMobileMenu(false)));
+
+    document.addEventListener("keydown",e=>{
+      if(e.key==="Escape"){closeCart();closeModal();setMobileMenu(false)}
+    });
+
+    // Apariciones suaves al entrar en pantalla.
+    function setupReveal(){
+      const targets=document.querySelectorAll(".section-head,.product,.story-card,.image-card,.quote,.gallery figure");
+      targets.forEach(el=>el.classList.add("reveal"));
+      if(!("IntersectionObserver" in window)){
+        targets.forEach(el=>el.classList.add("in-view"));
+        return;
+      }
+      const observer=new IntersectionObserver(entries=>{
+        entries.forEach(entry=>{
+          if(entry.isIntersecting){
+            entry.target.classList.add("in-view");
+            observer.unobserve(entry.target);
+          }
+        });
+      },{threshold:.08,rootMargin:"0px 0px -30px"});
+      targets.forEach(el=>observer.observe(el));
+    }
+
+    // Parallax sutil, sólo cuando el dispositivo permite movimiento.
+    function setupParallax(){
+      const els=[...document.querySelectorAll("[data-parallax]")];
+      if(!els.length || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      let ticking=false;
+      const update=()=>{
+        const vh=window.innerHeight;
+        els.forEach(el=>{
+          const rect=el.parentElement.getBoundingClientRect();
+          const center=rect.top + rect.height/2;
+          const delta=(center-vh/2);
+          const amount=parseFloat(el.dataset.parallax||"0");
+          const y=Math.max(-34,Math.min(34,-delta*amount));
+          el.style.transform=`translate3d(0, calc(-5% + ${y}px), 0)`;
+        });
+        ticking=false;
+      };
+      const request=()=>{
+        if(!ticking){requestAnimationFrame(update);ticking=true}
+      };
+      update();
+      addEventListener("scroll",request,{passive:true});
+      addEventListener("resize",request,{passive:true});
+    }
+
+    renderProducts();
+    updateCart();
+    setupReveal();
+    setupParallax();
+  </script>
+</body>
+</html>
